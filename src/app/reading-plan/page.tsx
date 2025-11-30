@@ -8,34 +8,27 @@ export default function ReadingPlanPage() {
     const [plan, setPlan] = useState<any>(null);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-8 px-4">
-            <div className="max-w-4xl mx-auto">
-                <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                        Reading Plan Generator
-                    </h1>
-                    <p className="text-slate-600">
-                        Create a personalized scripture study plan with AI
+        <div className="min-h-screen bg-[#F9FAFB] py-12 px-4">
+            <div className="max-w-6xl mx-auto">
+                {/* Header */}
+                <div className="mb-10">
+                    <div className="mb-3">
+                        <h1 className="text-3xl font-bold text-[#1F2937]">
+                            Personalized Reading Plan
+                        </h1>
+                    </div>
+                    <p className="text-[#6B7280] text-lg">
+                        Create a scripture study plan tailored to your goals and schedule.
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <ReadingPlanForm onPlanGenerated={setPlan} />
+                {/* Form Section */}
+                <ReadingPlanForm onPlanGenerated={setPlan} />
 
-                    {plan && (
+                {/* Plan Display Section */}
+                {plan && (
+                    <div className="mt-10">
                         <ReadingPlanDisplay summary={plan.summary} plan={plan.plan} />
-                    )}
-                </div>
-
-                {!plan && (
-                    <div className="mt-6 text-center p-12 bg-white rounded-xl border-2 border-slate-200">
-                        <div className="text-6xl mb-4">📅</div>
-                        <h3 className="text-xl font-semibold text-slate-800 mb-2">
-                            Ready to Start?
-                        </h3>
-                        <p className="text-slate-600">
-                            Configure your reading plan above and click "Generate Plan"
-                        </p>
                     </div>
                 )}
             </div>

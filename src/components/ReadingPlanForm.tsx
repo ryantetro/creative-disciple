@@ -41,78 +41,95 @@ export default function ReadingPlanForm({ onPlanGenerated }: ReadingPlanFormProp
     };
 
     return (
-        <div className="bg-white rounded-xl p-6 shadow-md border-2 border-slate-200">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">Create Your Reading Plan</h2>
-
-            {/* Goal Type */}
-            <div className="mb-6">
-                <h3 className="text-sm font-semibold text-slate-700 mb-3">Goal Type</h3>
-                <div className="space-y-2">
+        <div className="space-y-6">
+            {/* Section 1: Choose Your Goal */}
+            <div className="bg-white rounded-xl p-6 shadow-md border border-slate-200">
+                <h2 className="text-lg font-semibold text-[#1F2937] mb-4">
+                    1. Choose Your Goal
+                </h2>
+                <div className="space-y-3">
                     {[
                         { value: "complete", label: "Finish the Book of Mormon" },
-                        { value: "topic", label: "Study by topic (Faith, Repentance, Christ)" },
-                        { value: "daily", label: "Daily spiritual boost" },
+                        { value: "topic", label: "Study by Topic (Faith, Repentance, Hope, Christ, etc.)" },
+                        { value: "daily", label: "Daily Spiritual Growth (short daily insights)" },
                     ].map((option) => (
-                        <label key={option.value} className="flex items-center gap-3 cursor-pointer">
+                        <label key={option.value} className="flex items-center gap-3 cursor-pointer group">
                             <input
                                 type="radio"
                                 name="goal"
                                 value={option.value}
                                 checked={goal === option.value}
                                 onChange={(e) => setGoal(e.target.value)}
-                                className="w-4 h-4 text-blue-600"
+                                className="w-4 h-4 text-[#5E72E4] focus:ring-2 focus:ring-[#5E72E4] focus:ring-offset-2"
                             />
-                            <span className="text-slate-700">{option.label}</span>
+                            <span className="text-[#1F2937] group-hover:text-[#5E72E4] transition-colors">
+                                {option.label}
+                            </span>
                         </label>
                     ))}
                 </div>
             </div>
 
-            {/* Schedule */}
-            <div className="mb-6">
-                <h3 className="text-sm font-semibold text-slate-700 mb-3">Schedule</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Section 2: Set Your Schedule */}
+            <div className="bg-white rounded-xl p-6 shadow-md border border-slate-200">
+                <h2 className="text-lg font-semibold text-[#1F2937] mb-4">
+                    2. Set Your Schedule
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
-                        <label className="block text-sm text-slate-600 mb-2">
-                            Chapters per day: {chaptersPerDay}
+                        <label className="block text-sm font-medium text-[#6B7280] mb-2">
+                            Chapters per day
                         </label>
-                        <input
-                            type="range"
-                            min="1"
-                            max="5"
+                        <select
                             value={chaptersPerDay}
                             onChange={(e) => setChaptersPerDay(parseInt(e.target.value))}
-                            className="w-full"
-                        />
+                            className="w-full px-4 py-2.5 pr-10 rounded-lg border-2 border-slate-200 bg-white text-[#1F2937]
+                             focus:outline-none focus:border-[#5E72E4] focus:ring-2 focus:ring-[#5E72E4]/20
+                             transition-all duration-200 appearance-none cursor-pointer
+                             bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236B7280%22 stroke-width=%222%22%3E%3Cpath d=%22M6 9l6 6 6-6%22/%3E%3C/svg%3E')] bg-no-repeat bg-right-3 bg-size-[20px]"
+                        >
+                            {[1, 2, 3, 4, 5].map((num) => (
+                                <option key={num} value={num}>
+                                    {num}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                     <div>
-                        <label className="block text-sm text-slate-600 mb-2">
-                            Days per week: {daysPerWeek}
+                        <label className="block text-sm font-medium text-[#6B7280] mb-2">
+                            Days per week
                         </label>
-                        <input
-                            type="range"
-                            min="3"
-                            max="7"
+                        <select
                             value={daysPerWeek}
                             onChange={(e) => setDaysPerWeek(parseInt(e.target.value))}
-                            className="w-full"
-                        />
+                            className="w-full px-4 py-2.5 pr-10 rounded-lg border-2 border-slate-200 bg-white text-[#1F2937]
+                             focus:outline-none focus:border-[#5E72E4] focus:ring-2 focus:ring-[#5E72E4]/20
+                             transition-all duration-200 appearance-none cursor-pointer
+                             bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236B7280%22 stroke-width=%222%22%3E%3Cpath d=%22M6 9l6 6 6-6%22/%3E%3C/svg%3E')] bg-no-repeat bg-right-3 bg-size-[20px]"
+                        >
+                            {[3, 4, 5, 6, 7].map((num) => (
+                                <option key={num} value={num}>
+                                    {num}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </div>
             </div>
 
-            {/* Life Focus */}
-            <div className="mb-6">
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Life Focus (optional)
-                </label>
+            {/* Section 3: Life Focus */}
+            <div className="bg-white rounded-xl p-6 shadow-md border border-slate-200">
+                <h2 className="text-lg font-semibold text-[#1F2937] mb-4">
+                    3. What Are You Focusing On Right Now? <span className="text-[#6B7280] font-normal">(Optional)</span>
+                </h2>
                 <input
                     type="text"
                     value={focus}
                     onChange={(e) => setFocus(e.target.value)}
-                    placeholder="e.g., Staying positive, Building faith, Finding peace"
-                    className="w-full px-4 py-2 rounded-lg border-2 border-slate-200 bg-white text-slate-800
-                     focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+                    placeholder="Add focus or leave blank…"
+                    className="w-full px-4 py-2.5 rounded-lg border-2 border-slate-200 bg-white text-[#1F2937]
+                     focus:outline-none focus:border-[#5E72E4] focus:ring-2 focus:ring-[#5E72E4]/20
+                     placeholder:text-[#9CA3AF] transition-all duration-200"
                 />
             </div>
 
@@ -120,13 +137,14 @@ export default function ReadingPlanForm({ onPlanGenerated }: ReadingPlanFormProp
             <button
                 onClick={generatePlan}
                 disabled={loading}
-                className="w-full py-3 rounded-lg font-semibold text-white
-                   bg-gradient-to-r from-blue-500 to-purple-500
+                className="w-full py-4 rounded-lg font-semibold text-white text-lg
+                   bg-gradient-to-br from-blue-500 to-purple-500
                    hover:from-blue-600 hover:to-purple-600
                    disabled:opacity-50 disabled:cursor-not-allowed
-                   transition-all duration-200 shadow-md hover:shadow-lg"
+                   transition-all duration-200 shadow-lg hover:shadow-xl
+                   transform hover:scale-[1.01] active:scale-[0.99]"
             >
-                {loading ? "Generating Plan..." : "Generate Plan"}
+                {loading ? "Generating Plan..." : "Generate My Plan"}
             </button>
         </div>
     );

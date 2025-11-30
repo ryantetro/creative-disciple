@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
 import { ChatMessage } from "@/lib/types";
 
 interface ChatInterfaceProps {
@@ -107,9 +108,31 @@ export default function ChatInterface({ context }: ChatInterfaceProps) {
                                     : "bg-gradient-to-br from-purple-50 to-blue-50 text-slate-800 border-2 border-purple-200"
                                 }`}
                         >
-                            <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                                {message.content}
-                            </p>
+                            {message.role === "user" ? (
+                                <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                                    {message.content}
+                                </p>
+                            ) : (
+                                <div className="text-sm leading-relaxed markdown-content">
+                                    <ReactMarkdown
+                                        components={{
+                                            h1: ({ children }) => <h1 className="text-xl font-semibold text-slate-800 mt-4 mb-2">{children}</h1>,
+                                            h2: ({ children }) => <h2 className="text-lg font-semibold text-slate-800 mt-4 mb-2">{children}</h2>,
+                                            h3: ({ children }) => <h3 className="text-base font-semibold text-slate-800 mt-3 mb-2">{children}</h3>,
+                                            p: ({ children }) => <p className="text-slate-700 mb-3 leading-relaxed">{children}</p>,
+                                            strong: ({ children }) => <strong className="font-semibold text-slate-800">{children}</strong>,
+                                            ul: ({ children }) => <ul className="list-disc ml-5 mb-3 space-y-1">{children}</ul>,
+                                            ol: ({ children }) => <ol className="list-decimal ml-5 mb-3 space-y-1">{children}</ol>,
+                                            li: ({ children }) => <li className="text-slate-700 leading-relaxed">{children}</li>,
+                                            blockquote: ({ children }) => <blockquote className="border-l-4 border-purple-300 pl-4 italic text-slate-600 my-3">{children}</blockquote>,
+                                            code: ({ children }) => <code className="text-purple-600 bg-purple-50 px-1 py-0.5 rounded text-xs font-mono">{children}</code>,
+                                            pre: ({ children }) => <pre className="bg-slate-100 p-3 rounded-lg overflow-x-auto my-3">{children}</pre>,
+                                        }}
+                                    >
+                                        {message.content}
+                                    </ReactMarkdown>
+                                </div>
+                            )}
                         </div>
                     </div>
                 ))}

@@ -82,16 +82,16 @@ export default function ChatInterface({ context }: ChatInterfaceProps) {
     };
 
     return (
-        <div className="flex flex-col h-[600px] bg-white rounded-xl shadow-md border-2 border-slate-200">
+        <div className="flex flex-col h-[calc(100vh-250px)] sm:h-[500px] lg:h-[600px] bg-white rounded-xl shadow-md border-2 border-slate-200">
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
                 {messages.length === 0 && (
-                    <div className="text-center py-12">
-                        <div className="text-6xl mb-4">💬</div>
-                        <h3 className="text-xl font-semibold text-slate-800 mb-2">
+                    <div className="text-center py-8 sm:py-12">
+                        <div className="text-4xl sm:text-6xl mb-3 sm:mb-4">💬</div>
+                        <h3 className="text-lg sm:text-xl font-semibold text-slate-800 mb-2">
                             Scripture Study Companion
                         </h3>
-                        <p className="text-slate-600">
+                        <p className="text-sm sm:text-base text-slate-600">
                             Ask me anything about the Book of Mormon!
                         </p>
                     </div>
@@ -103,17 +103,17 @@ export default function ChatInterface({ context }: ChatInterfaceProps) {
                         className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                     >
                         <div
-                            className={`max-w-[80%] rounded-lg p-4 ${message.role === "user"
+                            className={`max-w-[85%] sm:max-w-[80%] rounded-lg p-3 sm:p-4 ${message.role === "user"
                                     ? "bg-blue-500 text-white"
                                     : "bg-gradient-to-br from-purple-50 to-blue-50 text-slate-800 border-2 border-purple-200"
                                 }`}
                         >
                             {message.role === "user" ? (
-                                <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                                <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
                                     {message.content}
                                 </p>
                             ) : (
-                                <div className="text-sm leading-relaxed markdown-content">
+                                <div className="text-xs sm:text-sm leading-relaxed markdown-content">
                                     <ReactMarkdown
                                         components={{
                                             h1: ({ children }) => <h1 className="text-xl font-semibold text-slate-800 mt-4 mb-2">{children}</h1>,
@@ -152,7 +152,7 @@ export default function ChatInterface({ context }: ChatInterfaceProps) {
             </div>
 
             {/* Input Area */}
-            <div className="border-t-2 border-slate-200 p-4">
+            <div className="border-t-2 border-slate-200 p-3 sm:p-4">
                 <div className="flex gap-2">
                     <textarea
                         value={input}
@@ -160,18 +160,18 @@ export default function ChatInterface({ context }: ChatInterfaceProps) {
                         onKeyPress={handleKeyPress}
                         placeholder="Ask a question about the scriptures..."
                         rows={2}
-                        className="flex-1 px-4 py-2 rounded-lg border-2 border-slate-200 bg-white text-slate-800
+                        className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border-2 border-slate-200 bg-white text-sm sm:text-base text-slate-800
                        focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20
                        resize-none"
                     />
                     <button
                         onClick={sendMessage}
                         disabled={!input.trim() || loading}
-                        className="px-6 py-2 rounded-lg font-semibold text-white
+                        className="px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg font-semibold text-sm sm:text-base text-white
                        bg-gradient-to-r from-blue-500 to-purple-500
                        hover:from-blue-600 hover:to-purple-600
                        disabled:opacity-50 disabled:cursor-not-allowed
-                       transition-all duration-200 shadow-md hover:shadow-lg"
+                       transition-all duration-200 shadow-md hover:shadow-lg min-w-[60px] sm:min-w-[80px]"
                     >
                         Send
                     </button>

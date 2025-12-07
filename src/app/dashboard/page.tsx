@@ -68,13 +68,13 @@ export default function DashboardPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-8 px-4">
-            <div className="max-w-6xl mx-auto space-y-6">
-                <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-4 sm:py-6 lg:py-8 px-4">
+            <div className="max-w-6xl mx-auto space-y-4 sm:space-y-6">
+                <div className="text-center mb-6 sm:mb-8">
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
                         Scripture Tracker
                     </h1>
-                    <p className="text-slate-600">Track your Book of Mormon reading journey</p>
+                    <p className="text-sm sm:text-base text-slate-600">Track your Book of Mormon reading journey</p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -96,9 +96,9 @@ export default function DashboardPage() {
                     />
                 )}
 
-                <div className="bg-white rounded-xl p-6 shadow-md">
+                <div className="bg-white rounded-xl p-4 sm:p-6 shadow-md">
                     <BookSelector selectedBook={selectedBook} onSelectBook={setSelectedBook} />
-                    <div className="mt-6">
+                    <div className="mt-4 sm:mt-6">
                         <ChapterGrid
                             book={selectedBook}
                             totalChapters={totalChapters}

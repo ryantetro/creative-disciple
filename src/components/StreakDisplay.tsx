@@ -14,15 +14,15 @@ export default function StreakDisplay({ streak }: StreakDisplayProps) {
     };
 
     return (
-        <div className="bg-white rounded-xl p-6 shadow-md border-2 border-blue-100">
-            <div className="flex items-center gap-4">
-                <div className="text-5xl animate-pulse">🔥</div>
+        <div className="bg-white rounded-xl p-4 sm:p-6 shadow-md border-2 border-blue-100">
+            <div className="flex items-center gap-3 sm:gap-4">
+                <div className="text-4xl sm:text-5xl animate-pulse">🔥</div>
                 <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-slate-800 mb-1">Reading Streak</h3>
-                    <p className="text-3xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+                    <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-1">Reading Streak</h3>
+                    <p className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
                         {streak} {streak === 1 ? "day" : "days"}
                     </p>
-                    <p className="text-sm text-slate-600 mt-1">{getMessage()}</p>
+                    <p className="text-xs sm:text-sm text-slate-600 mt-1">{getMessage()}</p>
                 </div>
             </div>
         </div>

@@ -43,7 +43,7 @@ export default function AIInsightCard({ book, chapter, entry }: AIInsightCardPro
         return (
             <button
                 onClick={generateInsight}
-                className="mt-3 px-4 py-2 rounded-lg font-medium text-white
+                className="mt-3 px-4 py-2.5 rounded-lg font-medium text-sm sm:text-base text-white min-h-[44px]
                    bg-gradient-to-r from-blue-500 to-purple-500
                    hover:from-blue-600 hover:to-purple-600
                    transition-all duration-200 shadow-md hover:shadow-lg
@@ -57,10 +57,10 @@ export default function AIInsightCard({ book, chapter, entry }: AIInsightCardPro
 
     if (loading) {
         return (
-            <div className="mt-3 p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border-2 border-blue-200">
-                <div className="flex items-center gap-3">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
-                    <span className="text-sm text-slate-700">Generating insights...</span>
+            <div className="mt-3 p-3 sm:p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border-2 border-blue-200">
+                <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-b-2 border-blue-600"></div>
+                    <span className="text-xs sm:text-sm text-slate-700">Generating insights...</span>
                 </div>
             </div>
         );
@@ -68,11 +68,11 @@ export default function AIInsightCard({ book, chapter, entry }: AIInsightCardPro
 
     if (error) {
         return (
-            <div className="mt-3 p-4 bg-red-50 rounded-lg border-2 border-red-200">
-                <p className="text-sm text-red-600">{error}</p>
+            <div className="mt-3 p-3 sm:p-4 bg-red-50 rounded-lg border-2 border-red-200">
+                <p className="text-xs sm:text-sm text-red-600">{error}</p>
                 <button
                     onClick={generateInsight}
-                    className="mt-2 text-sm text-red-700 underline hover:text-red-800"
+                    className="mt-2 text-xs sm:text-sm text-red-700 underline hover:text-red-800 min-h-[32px]"
                 >
                     Try again
                 </button>
@@ -86,25 +86,25 @@ export default function AIInsightCard({ book, chapter, entry }: AIInsightCardPro
         <div className="mt-3 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border-2 border-blue-200 overflow-hidden">
             <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="w-full p-4 flex items-center justify-between hover:bg-blue-100/50 transition-colors"
+                className="w-full p-3 sm:p-4 flex items-center justify-between hover:bg-blue-100/50 transition-colors min-h-[44px]"
             >
                 <div className="flex items-center gap-2">
-                    <span className="text-2xl">💡</span>
-                    <span className="font-semibold text-slate-800">AI Insights</span>
+                    <span className="text-xl sm:text-2xl">💡</span>
+                    <span className="text-sm sm:text-base font-semibold text-slate-800">AI Insights</span>
                 </div>
-                <span className="text-slate-600">{isExpanded ? "▼" : "▶"}</span>
+                <span className="text-slate-600 text-sm sm:text-base">{isExpanded ? "▼" : "▶"}</span>
             </button>
 
             {isExpanded && (
-                <div className="p-4 pt-0 space-y-4 animate-fadeIn">
+                <div className="p-3 sm:p-4 pt-0 space-y-3 sm:space-y-4 animate-fadeIn">
                     {/* Themes */}
                     <div>
-                        <h4 className="text-sm font-semibold text-slate-700 mb-2">Key Themes</h4>
+                        <h4 className="text-xs sm:text-sm font-semibold text-slate-700 mb-2">Key Themes</h4>
                         <div className="flex flex-wrap gap-2">
                             {insight.themes.map((theme, i) => (
                                 <span
                                     key={i}
-                                    className="px-3 py-1 bg-white rounded-full text-xs font-medium text-blue-600 border border-blue-200"
+                                    className="px-2 sm:px-3 py-1 bg-white rounded-full text-xs font-medium text-blue-600 border border-blue-200"
                                 >
                                     {theme}
                                 </span>
@@ -114,20 +114,20 @@ export default function AIInsightCard({ book, chapter, entry }: AIInsightCardPro
 
                     {/* Insight */}
                     <div>
-                        <h4 className="text-sm font-semibold text-slate-700 mb-2">Insight</h4>
-                        <p className="text-sm text-slate-600 leading-relaxed">{insight.insight}</p>
+                        <h4 className="text-xs sm:text-sm font-semibold text-slate-700 mb-2">Insight</h4>
+                        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{insight.insight}</p>
                     </div>
 
                     {/* Question */}
                     <div>
-                        <h4 className="text-sm font-semibold text-slate-700 mb-2">Reflection Question</h4>
-                        <p className="text-sm text-slate-600 italic">{insight.question}</p>
+                        <h4 className="text-xs sm:text-sm font-semibold text-slate-700 mb-2">Reflection Question</h4>
+                        <p className="text-xs sm:text-sm text-slate-600 italic">{insight.question}</p>
                     </div>
 
                     {/* Application */}
                     <div>
-                        <h4 className="text-sm font-semibold text-slate-700 mb-2">Application</h4>
-                        <p className="text-sm text-slate-600 leading-relaxed">{insight.application}</p>
+                        <h4 className="text-xs sm:text-sm font-semibold text-slate-700 mb-2">Application</h4>
+                        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{insight.application}</p>
                     </div>
                 </div>
             )}

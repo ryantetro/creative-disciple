@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { canMakeRequest, recordRequest, getRemainingRequests } from "@/lib/rateLimit";
 
 interface ReadingPlanFormProps {
     onPlanGenerated: (plan: any) => void;
@@ -16,7 +17,18 @@ export default function ReadingPlanForm({ onPlanGenerated }: ReadingPlanFormProp
     const generatePlan = async () => {
         setLoading(true);
 
+        // Check rate limit before making request
+        const rateCheck = canMakeRequest();
+        
+        if (!rateCheck.allowed) {
+            const remaining = getRemainingRequests();
+            alert(rateCheck.reason || `Please wait before generating another plan. ${remaining} requests remaining today.`);
+            setLoading(false);
+            return;
+        }
+
         try {
+            recordRequest();
             const response = await fetch("/api/gemini/reading-plan", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -28,7 +40,14 @@ export default function ReadingPlanForm({ onPlanGenerated }: ReadingPlanFormProp
                 }),
             });
 
-            if (!response.ok) throw new Error("Failed to generate plan");
+            if (!response.ok) {
+                if (response.status === 429) {
+                    alert("Rate limit reached. Please wait a moment and try again.");
+                } else {
+                    throw new Error("Failed to generate plan");
+                }
+                return;
+            }
 
             const data = await response.json();
             onPlanGenerated(data);

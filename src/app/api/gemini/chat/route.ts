@@ -14,6 +14,15 @@ Focus on helping users deepen their understanding and apply principles in their 
 
 export async function POST(request: NextRequest) {
     try {
+        // Check if at least one API key is configured
+        if (!process.env.GEMINI_API_KEY && !process.env.OPENAI_API_KEY) {
+            console.error("Neither GEMINI_API_KEY nor OPENAI_API_KEY is configured");
+            return NextResponse.json(
+                { error: "AI service is not configured. Please contact support." },
+                { status: 503 }
+            );
+        }
+
         const { messages, context } = await request.json();
 
         if (!messages || !Array.isArray(messages) || messages.length === 0) {
@@ -43,9 +52,29 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({ response });
     } catch (error) {
-        console.error("Error in chat:", error);
+        console.error("Error in chat API:", error);
+        
+        // Provide more specific error messages
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        
+        // Check if it's an API key error
+        if (errorMessage.includes("GEMINI_API_KEY") || errorMessage.includes("API key")) {
+            return NextResponse.json(
+                { error: "AI service configuration error. Please contact support." },
+                { status: 503 }
+            );
+        }
+        
+        // Check if it's a rate limit or quota error
+        if (errorMessage.includes("quota") || errorMessage.includes("rate limit") || errorMessage.includes("429")) {
+            return NextResponse.json(
+                { error: "AI service is temporarily unavailable. Please try again later." },
+                { status: 429 }
+            );
+        }
+
         return NextResponse.json(
-            { error: "Failed to generate response" },
+            { error: "Failed to generate response. Please try again." },
             { status: 500 }
         );
     }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AIInsight } from "@/lib/types";
+import { canMakeRequest, recordRequest, getRemainingRequests } from "@/lib/rateLimit";
 
 interface AIInsightCardProps {
     book: string;
@@ -19,14 +20,32 @@ export default function AIInsightCard({ book, chapter, entry }: AIInsightCardPro
         setLoading(true);
         setError(null);
 
+        // Check rate limit before making request
+        const rateCheck = canMakeRequest();
+        
+        if (!rateCheck.allowed) {
+            const remaining = getRemainingRequests();
+            setError(rateCheck.reason || `Please wait before requesting insights. ${remaining} requests remaining today.`);
+            setLoading(false);
+            return;
+        }
+
         try {
+            recordRequest();
             const response = await fetch("/api/gemini/insights", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ book, chapter, entry }),
             });
 
-            if (!response.ok) throw new Error("Failed to generate insights");
+            if (!response.ok) {
+                if (response.status === 429) {
+                    setError("Rate limit reached. Please wait a moment and try again.");
+                } else {
+                    throw new Error("Failed to generate insights");
+                }
+                return;
+            }
 
             const data = await response.json();
             setInsight(data);

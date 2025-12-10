@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { canMakeRequest, recordRequest } from "@/lib/rateLimit";
 
 interface ReflectionPromptBannerProps {
     book: string;
@@ -20,7 +21,16 @@ export default function ReflectionPromptBanner({
 
     useEffect(() => {
         const fetchPrompt = async () => {
+            const rateCheck = canMakeRequest();
+            if (!rateCheck.allowed) {
+                // Use fallback prompt if rate limited
+                setPrompt(`Reflect on the teachings in ${book} ${chapter}. What principle stands out to you?`);
+                setLoading(false);
+                return;
+            }
+
             try {
+                recordRequest();
                 const response = await fetch("/api/gemini/prompts", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -31,6 +41,9 @@ export default function ReflectionPromptBanner({
                     const data = await response.json();
                     setPrompt(data.prompt);
                     setFocusAreas(data.focusAreas || []);
+                } else if (response.status === 429) {
+                    // Rate limited by server, use fallback
+                    setPrompt(`Reflect on the teachings in ${book} ${chapter}. What principle stands out to you?`);
                 }
             } catch (error) {
                 console.error("Error fetching prompt:", error);

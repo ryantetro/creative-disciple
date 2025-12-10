@@ -3,6 +3,15 @@ import { generateContent } from "@/lib/gemini";
 
 export async function POST(request: NextRequest) {
     try {
+        // Check if at least one API key is configured
+        if (!process.env.GEMINI_API_KEY && !process.env.OPENAI_API_KEY) {
+            console.error("Neither GEMINI_API_KEY nor OPENAI_API_KEY is configured");
+            return NextResponse.json(
+                { error: "AI service is not configured. Please contact support." },
+                { status: 503 }
+            );
+        }
+
         const { book, chapter } = await request.json();
 
         if (!book || !chapter) {
@@ -42,8 +51,25 @@ Provide the response in JSON format:
         });
     } catch (error) {
         console.error("Error generating prompt:", error);
+        
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        
+        if (errorMessage.includes("GEMINI_API_KEY") || errorMessage.includes("API key")) {
+            return NextResponse.json(
+                { error: "AI service configuration error. Please contact support." },
+                { status: 503 }
+            );
+        }
+        
+        if (errorMessage.includes("quota") || errorMessage.includes("rate limit") || errorMessage.includes("429")) {
+            return NextResponse.json(
+                { error: "AI service is temporarily unavailable. Please try again later." },
+                { status: 429 }
+            );
+        }
+
         return NextResponse.json(
-            { error: "Failed to generate prompt" },
+            { error: "Failed to generate prompt. Please try again." },
             { status: 500 }
         );
     }

@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { ChatMessage } from "@/lib/types";
+import { canMakeRequest, recordRequest, getRemainingRequests } from "@/lib/rateLimit";
 
 interface ChatInterfaceProps {
     context?: { book: string; chapter: number };
@@ -25,6 +26,23 @@ export default function ChatInterface({ context }: ChatInterfaceProps) {
     const sendMessage = async () => {
         if (!input.trim() || loading) return;
 
+        // Check rate limit before making request
+        const rateCheck = canMakeRequest();
+        
+        if (!rateCheck.allowed) {
+            const remaining = getRemainingRequests();
+            const waitSeconds = rateCheck.waitTime ? Math.ceil(rateCheck.waitTime / 1000) : 0;
+            
+            const errorMessage: ChatMessage = {
+                id: crypto.randomUUID(),
+                role: "assistant",
+                content: `⏳ **Please wait**\n\n${rateCheck.reason || `Please wait ${waitSeconds} seconds before sending another message.`}\n\nRemaining requests today: ${remaining}`,
+                timestamp: new Date().toISOString(),
+            };
+            setMessages((prev) => [...prev, errorMessage]);
+            return;
+        }
+
         const userMessage: ChatMessage = {
             id: crypto.randomUUID(),
             role: "user",
@@ -37,6 +55,7 @@ export default function ChatInterface({ context }: ChatInterfaceProps) {
         setLoading(true);
 
         try {
+            recordRequest();
             const response = await fetch("/api/gemini/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -49,7 +68,19 @@ export default function ChatInterface({ context }: ChatInterfaceProps) {
                 }),
             });
 
-            if (!response.ok) throw new Error("Failed to get response");
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                const errorMessage = errorData.error || "Failed to get response";
+                
+                // Handle specific error cases
+                if (response.status === 429) {
+                    throw new Error("rate_limit");
+                } else if (response.status === 503) {
+                    throw new Error("service_unavailable");
+                } else {
+                    throw new Error(errorMessage);
+                }
+            }
 
             const data = await response.json();
             const assistantMessage: ChatMessage = {
@@ -62,10 +93,23 @@ export default function ChatInterface({ context }: ChatInterfaceProps) {
             setMessages((prev) => [...prev, assistantMessage]);
         } catch (error) {
             console.error("Error sending message:", error);
+            
+            let errorContent = "Sorry, I encountered an error. Please try again.";
+            
+            if (error instanceof Error) {
+                if (error.message === "rate_limit") {
+                    errorContent = "⚠️ **Rate Limit Reached**\n\nI've received too many requests. Please wait a moment and try again in a few seconds. The AI service has rate limits to ensure fair usage for everyone.";
+                } else if (error.message === "service_unavailable") {
+                    errorContent = "⚠️ **Service Unavailable**\n\nThe AI service is not currently configured or available. Please contact support if this issue persists.";
+                } else if (error.message.includes("Failed to get response")) {
+                    errorContent = "⚠️ **Connection Error**\n\nUnable to connect to the AI service. Please check your internet connection and try again.";
+                }
+            }
+            
             const errorMessage: ChatMessage = {
                 id: crypto.randomUUID(),
                 role: "assistant",
-                content: "Sorry, I encountered an error. Please try again.",
+                content: errorContent,
                 timestamp: new Date().toISOString(),
             };
             setMessages((prev) => [...prev, errorMessage]);

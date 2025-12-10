@@ -3,6 +3,15 @@ import { generateContent } from "@/lib/gemini";
 
 export async function POST(request: NextRequest) {
     try {
+        // Check if at least one API key is configured
+        if (!process.env.GEMINI_API_KEY && !process.env.OPENAI_API_KEY) {
+            console.error("Neither GEMINI_API_KEY nor OPENAI_API_KEY is configured");
+            return NextResponse.json(
+                { error: "AI service is not configured. Please contact support." },
+                { status: 503 }
+            );
+        }
+
         const { book, chapter, entry } = await request.json();
 
         if (!book || !chapter || !entry) {
@@ -45,8 +54,25 @@ Focus on being encouraging, respectful, and spiritually uplifting. Keep response
         });
     } catch (error) {
         console.error("Error generating insights:", error);
+        
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        
+        if (errorMessage.includes("GEMINI_API_KEY") || errorMessage.includes("API key")) {
+            return NextResponse.json(
+                { error: "AI service configuration error. Please contact support." },
+                { status: 503 }
+            );
+        }
+        
+        if (errorMessage.includes("quota") || errorMessage.includes("rate limit") || errorMessage.includes("429")) {
+            return NextResponse.json(
+                { error: "AI service is temporarily unavailable. Please try again later." },
+                { status: 429 }
+            );
+        }
+
         return NextResponse.json(
-            { error: "Failed to generate insights" },
+            { error: "Failed to generate insights. Please try again." },
             { status: 500 }
         );
     }
